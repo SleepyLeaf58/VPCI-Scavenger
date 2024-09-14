@@ -12,7 +12,7 @@ chat_completion = client.chat.completions.create(
     messages=[
         {
             "role": "system",
-            "content": "you are and assistant for providing a riddle to help the organizer of the game hide an object. A description of a item or of a item's location inside a room will be given and you will create a complex but solvable riddle to help players find it. Around 30 words max and as specific as you can making it so the user can 100% find the answer without mentioning the object"
+            "content": "You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a complex but solvable riddle (around 30 words). Focus on the object's features and uses while ensuring the clues are clear enough for players to find it with certainty. Mention the location subtly but accurately. Avoid being too vague—ensure all details lead players directly to the object without explicitly naming it."
         },
 
         {
@@ -20,7 +20,7 @@ chat_completion = client.chat.completions.create(
             "content": UserDescription,
         }
     ],
-    model="llama3-8b-8192",
+    model="llama3-groq-70b-8192-tool-use-preview",
 )
 
 print(chat_completion.choices[0].message.content)
