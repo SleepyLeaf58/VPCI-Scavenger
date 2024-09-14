@@ -10,13 +10,13 @@ Users can create a game room by submitting a form, and join open game rooms
 ### HTML/CSS (Bootstrap)
 HTML/CSS makes up most of our front-end, with many components from Bootstrap
 ### Groq
-Groq powers our riddle generator
-### mappedin
+Groq powers our riddle generator, from which organizers can create riddle hints based on the location, type of item, and method of hiding.
+### MappedIn
 Mappedin
 ### Genesys
 When players find an item, they send an image to a Genesys survey, where it can be verified by an organizer/moderator
 ### Flask
-Flask is our back-end idk
+Flask is used to create the functionality of our project
 
 ## Features
 * Some sort of user needs to be created to join the scavenger
