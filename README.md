@@ -36,16 +36,15 @@ Share the game to the players-->
 
 ## Sponsor Tools Used 🤝
 ### Groq
-![title](images/groq.jpg)
-<img src="groq.jpg" width="100" height="100">
+<img src="images/groq.jpg" width="100" height="100">
 
 Groq powers our riddle generator, and generates hints for items based on the location, type of item, and hiding method.
 ### MappedIn
-<img src="mappedin.jpg" width="100" height="100">
+<img src="images/mappedin.jpg" width="100" height="100">
 
 Mappedin powers our map implementation, which helps players find their next item by making it easier for them to navigate around campus.
 ### Genesys
-<img src="genesys.png" width="100" height="50">
+<img src="images/genesys.png" width="100" height="50">
 
 Genesys powers our item verification system. When players find an item, they send an image to a Genesys survey, where it can be verified by a Scavenger Hunt organizer/moderator.
 
