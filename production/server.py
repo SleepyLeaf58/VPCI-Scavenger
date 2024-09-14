@@ -107,6 +107,10 @@ def current_riddle():
 @app.route("/join-game")
 def join_game_page():
     return render_template("join.html")
+
+@app.route("/create-game")
+def create_game_page():
+    return render_template("create_game.html")
     
 @app.route("/current-riddle/<player>/<hunt>", methods=["GET"])
 def current_riddle_get(player, hunt):
