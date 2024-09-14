@@ -53,7 +53,7 @@ Groq powers our riddle generator, and generates hints for items based on the loc
 ![title](Images/example.png)
 Mappedin powers our map implementation, which helps players find their next item by making it easier for them to navigate around campus.
 ### Genesys
-![title](Images/example.png)
+![title](Images/mappedin.png)
 Genesys powers our item verification system. When players find an item, they send an image to a Genesys survey, where it can be verified by a Scavenger Hunt organizer/moderator.
 
 
