@@ -47,13 +47,13 @@ Needs description of how the item is hidden such that we can generate more inter
 
 ## Sponsor Tools Used
 ### Groq
-![title](Images/groq.png)
+![title](images/groq.png)
 Groq powers our riddle generator, and generates hints for items based on the location, type of item, and hiding method.
 ### MappedIn
-![title](Images/example.png)
+![title](images/example.png)
 Mappedin powers our map implementation, which helps players find their next item by making it easier for them to navigate around campus.
 ### Genesys
-![title](Images/mappedin.png)
+![title](images/mappedin.png)
 Genesys powers our item verification system. When players find an item, they send an image to a Genesys survey, where it can be verified by a Scavenger Hunt organizer/moderator.
 
 
