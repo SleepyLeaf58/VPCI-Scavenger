@@ -1,8 +1,8 @@
-# HTN 2024 Scavenger Hunt
+# HTN 2024 Scavenger Hunt 🔎
 Our project for Hack The North 2024
 
 ## What is Scavenger Hunt?
-Scavenger Hunt is a game to create and join scavenger hunt games to help new university students learn and get acclimatized to the campus. 
+Scavenger Hunt is a game to create and join scavenger hunt games to help new university students learn and get acclimatized to the campus 🏫. 
 
 ## How to Play
 
@@ -45,13 +45,16 @@ Groq AI to generate hints for items
 Organizer can specify location and item to generate interestingly themed hints
 Needs description of how the item is hidden such that we can generate more interesting and revealing hints
 
-## Tools used
+## Sponsor Tools Used
 ### Groq
-Groq powers our riddle generator, from generates hints for items based on the location, type of item, and method of hiding.
+![title](Images/groq.png)
+Groq powers our riddle generator, and generates hints for items based on the location, type of item, and hiding method.
 ### MappedIn
-Mappedin
+![title](Images/example.png)
+Mappedin powers our map implementation, which helps players find their next item by making it easier for them to navigate around campus.
 ### Genesys
-When players find an item, they send an image to a Genesys survey, where it can be verified by an organizer/moderator
+![title](Images/example.png)
+Genesys powers our item verification system. When players find an item, they send an image to a Genesys survey, where it can be verified by a Scavenger Hunt organizer/moderator.
 
 
 
