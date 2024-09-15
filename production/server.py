@@ -1,6 +1,7 @@
 from flask import *
 import random
 from groq import Groq
+import time
 
 app = Flask(__name__)
 
@@ -10,6 +11,11 @@ client = Groq(
 
 hunts = {}  # store hunts and items
 players = {}  # store players and their progress
+
+# Route for Home Page
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 # Route for organizers to start a hunt
 @app.route("/start-hunt", methods=['POST'])
@@ -86,7 +92,7 @@ def join_hunt():
     name = request.form["name"]
     if hunt_id in hunts:
         player_id = random.randint(1000, 9999)
-        player = {'name': name, 'current_object': 0, 'finished': False}
+        player = {'name': name, 'current_object': 0, 'start_time': time.time(), 'current_time': time.time(), 'finished': False}
         hunts[hunt_id]['players'].append(player_id)
         players[player_id] = player
         first_hint = hunts[hunt_id]['objects'][0]['riddle']
@@ -106,7 +112,7 @@ def current_riddle():
     
 @app.route("/join-game")
 def join_game_page():
-    return render_template("join.html")
+    return render_template("join-game.html")
 
 @app.route("/create-game")
 def create_game_page():
@@ -138,13 +144,20 @@ def submit_item():
         
         if code == correct_code:
             player['current_object'] += 1
+            player['current_time'] = time.time()
             if player['current_object'] < len(hunts[hunt_id]['objects']):
                 next_hint = hunts[hunt_id]['objects'][player['current_object']]['riddle']
                 next_room = hunts[hunt_id]['objects'][player['current_object']]['room']
                 return redirect(f"/current-riddle/{player_id}/{hunt_id}")
             else:
                 player['finished'] = True
-                return jsonify({"message": f"Congratulations {player['name']}! You've found all the items and completed the hunt!"})
+                total_seconds = round(player['current_time']-player['start_time'])
+                hours = total_seconds // 3600
+                total_seconds %= 3600
+                minutes = total_seconds // 60
+                total_seconds %= 60
+                seconds = total_seconds
+                return jsonify({"message": f"Congratulations {player['name']}! You've found all the items and completed the hunt in {hours} hours, {minutes} minutes, and {seconds} seconds!"})
         else:
             return jsonify({"error": "Incorrect code"}), 400
     else:
