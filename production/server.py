@@ -135,7 +135,7 @@ def submit_item():
     code = str(request.form["code"])
     
     if player_id in players and hunt_id in hunts:
-        player = players[player_id]
+        player = players[int(player_id)]
         current_object_idx = player['current_object']
         if player['finished']:
             return jsonify({"message": "You have already finished the hunt!"})
@@ -152,12 +152,13 @@ def submit_item():
             else:
                 player['finished'] = True
                 total_seconds = round(player['current_time']-player['start_time'])
-                hours = total_seconds // 3600
-                total_seconds %= 3600
-                minutes = total_seconds // 60
-                total_seconds %= 60
-                seconds = total_seconds
-                return jsonify({"message": f"Congratulations {player['name']}! You've found all the items and completed the hunt in {hours} hours, {minutes} minutes, and {seconds} seconds!"})
+                return redirect(f"/finish/{player_id}/{hunt_id}")
+                # hours = total_seconds // 3600
+                # total_seconds %= 3600
+                # minutes = total_seconds // 60
+                # total_seconds %= 60
+                # seconds = total_seconds
+                # return jsonify({"message": f"Congratulations {player['name']}! You've found all the items and completed the hunt in {hours} hours, {minutes} minutes, and {seconds} seconds!"})
         else:
             return jsonify({"error": "Incorrect code"}), 400
     else:
@@ -169,7 +170,7 @@ def leaderboard(hunt_id):
         names, scores = [], []
         for player in hunts[hunt_id]['players']:
             # player is an id here
-            pl = players[player]
+            pl = players[int(player)]
             name = pl["name"]
             score = pl["current_object"]
             names.append(name)
@@ -184,6 +185,35 @@ def leaderboard(hunt_id):
         return render_template("leaderboard.html", names=sorted_names, scores=sorted_scores)
     else:
         return jsonify({"error": "Hunt not found"}), 404
+
+# Route for finishing
+# Route for players to submit found item codes
+@app.route("/finish/<player>/<hunt>", methods=["GET"])
+def finish_game(player, hunt):
+    player_id = player
+    hunt_id = int(hunt)
+    player = players[int(player_id)]
+
+    player_time = player['current_time']
+    print(player)
+
+    rank = 1
+    for participant in hunts[hunt_id]['players']:
+        # player is an id here
+        pl = players[int(participant)]
+        if (pl['finished'] and pl['current_time'] < player_time): 
+            rank += 1
+    
+    if player['finished']:
+        total_seconds = round(player['current_time']-player['start_time'])
+        hours = total_seconds // 3600
+        total_seconds %= 3600
+        minutes = total_seconds // 60
+        total_seconds %= 60
+        seconds = total_seconds
+        return render_template("finish.html", name=player['name'], rk=rank,  hrs=hours, mins=minutes, secs=seconds)
+    else:
+        return jsonify({"error": "Unfinished hunt"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
