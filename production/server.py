@@ -62,7 +62,7 @@ def start_hunt():
         ],
         'players': []
     }
-    return f"Hunt with name {hunt_name} created! The id for this hunt is {hunt_id}"
+    return render_template("hunt-reveal.html", hunt_name=hunt_name, hunt_id=hunt_id)
 
 # Route for players to join a hunt
 @app.route("/join-hunt", methods=["POST"])
@@ -96,7 +96,7 @@ def join_game_page():
 
 @app.route("/create-game")
 def create_game_page():
-    return render_template("create_game.html")
+    return render_template("create-game.html")
 
 @app.route("/current-riddle/<player>/<hunt>", methods=["GET"])
 def current_riddle_get(player, hunt):
