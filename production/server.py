@@ -106,7 +106,7 @@ def current_riddle():
     
 @app.route("/join-game")
 def join_game_page():
-    return render_template("join.html")
+    return render_template("join-game.html")
 
 @app.route("/create-game")
 def create_game_page():
