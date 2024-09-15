@@ -162,17 +162,26 @@ def submit_item():
             return jsonify({"error": "Incorrect code"}), 400
     else:
         return jsonify({"error": "Invalid player or hunt"}), 404
-
 # Route to check leaderboard or see who finished first
 @app.route("/leaderboard/<int:hunt_id>", methods=['GET'])
 def leaderboard(hunt_id):
     if hunt_id in hunts:
-        finished_players = [player_id for player_id in hunts[hunt_id]['players'] if players[player_id]['finished']]
-        if finished_players:
-            winner = players[finished_players[0]]['name']  # The first player to finish
-            return jsonify({"message": f"{winner} has won the hunt!"})
-        else:
-            return jsonify({"message": "No one has completed the hunt yet."})
+        names, scores = [], []
+        for player in hunts[hunt_id]['players']:
+            # player is an id here
+            pl = players[player]
+            name = pl["name"]
+            score = pl["current_object"]
+            names.append(name)
+            scores.append(score)
+        
+        sorted_pairs = sorted(zip(scores, names), reverse=True)
+        sorted_scores, sorted_names = zip(*sorted_pairs)
+        sorted_scores = list(sorted_scores)
+        sorted_names = list(sorted_names)
+
+        # Pass the data to the HTML template
+        return render_template("leaderboard.html", names=sorted_names, scores=sorted_scores)
     else:
         return jsonify({"error": "Hunt not found"}), 404
 
