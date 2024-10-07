@@ -1,13 +1,15 @@
 from flask import *
 import random
-from groq import Groq
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
 import time
 
 app = Flask(__name__)
 
-client = Groq(
-    api_key="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",
-)
+load_dotenv()
+genai.configure(api_key=os.environ['API_KEY'])
+model = genai.GenerativeModel("gemini-1.5-pro")
 
 hunts = {}  # store hunts and items
 players = {}  # store players and their progress
@@ -34,19 +36,8 @@ def start_hunt():
     hunt_id = random.randint(1000, 9999)
 
     def generate_riddle(riddle):
-        return client.chat.completions.create(
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question."
-                },
-                {
-                    "role": "user",
-                    "content": riddle,
-                }
-            ],
-            model="llama3-groq-70b-8192-tool-use-preview",
-        ).choices[0].message.content
+        response = model.generate_content(f"You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. The object given is {riddle}")
+        return response.text        
 
     riddle_1 = generate_riddle(riddle1)
     riddle_2 = generate_riddle(riddle2)
