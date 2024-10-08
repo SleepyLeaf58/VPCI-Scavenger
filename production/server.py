@@ -10,6 +10,7 @@ from Object import *
 app = Flask(__name__)
 
 load_dotenv()
+
 genai.configure(api_key=os.environ['API_KEY'])
 model = genai.GenerativeModel("gemini-1.5-flash")
 
