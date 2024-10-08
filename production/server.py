@@ -5,11 +5,13 @@ import os
 from dotenv import load_dotenv
 import time
 
+from Object import *
+
 app = Flask(__name__)
 
 load_dotenv()
 genai.configure(api_key=os.environ['API_KEY'])
-model = genai.GenerativeModel("gemini-1.5-pro")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 hunts = {}  # store hunts and items
 players = {}  # store players and their progress
@@ -33,23 +35,26 @@ def start_hunt():
     code1 = request.form['code1']
     code2 = request.form['code2']
     code3 = request.form['code3']
+
+    object1 = Object(request.form['riddle1'], request.form['room1'], request.form['code1'])
+    object2 = Object(request.form['riddle2'], request.form['room2'], request.form['code2'])
+    object3 = Object(request.form['riddle3'], request.form['room3'], request.form['code3'])
+
     hunt_id = random.randint(1000, 9999)
 
-    def generate_riddle(riddle):
-        response = model.generate_content(f"You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. The object given is {riddle}")
+    def generate_riddle(object):
+        response = model.generate_content(f"You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. The object description given is {object.getRiddle()}")
         return response.text        
 
-    riddle_1 = generate_riddle(riddle1)
-    riddle_2 = generate_riddle(riddle2)
-    riddle_3 = generate_riddle(riddle3)
+    object1.setRiddle(generate_riddle(object1))
+    object2.setRiddle(generate_riddle(object2))
+    object3.setRiddle(generate_riddle(object3))
 
     hunts[hunt_id] = {
         'hunt_name': hunt_name,
         'organizer': organizer,
         'objects': [
-            {"riddle": riddle_1, "room": room1, "code": code1},
-            {"riddle": riddle_2, "room": room2, "code": code2},
-            {"riddle": riddle_3, "room": room3, "code": code3}
+            object1, object2, object3
         ],
         'players': []
     }
@@ -75,8 +80,8 @@ def current_riddle():
     hunt_id = int(request.form["hunt_id"])
     player = players.get(int(player_id))
     if player:
-        next_hint = hunts[hunt_id]['objects'][player['current_object']]['riddle']
-        next_room = hunts[hunt_id]['objects'][player['current_object']]['room']
+        next_hint = hunts[hunt_id]['objects'][player['current_object']].getRiddle()
+        next_room = hunts[hunt_id]['objects'][player['current_object']].getRoom()
         return render_template("player-dashboard.html", riddle=next_hint, room=next_room, obj=player['current_object'], player_id=player_id, hunt_id=hunt_id)
     else:
         return render_template("error.html", error="Player not found.")
@@ -95,8 +100,8 @@ def current_riddle_get(player, hunt):
     hunt_id = int(hunt)
     player = players.get(player_id)
     if player:
-        next_hint = hunts[hunt_id]['objects'][player['current_object']]['riddle']
-        next_room = hunts[hunt_id]['objects'][player['current_object']]['room']
+        next_hint = hunts[hunt_id]['objects'][player['current_object']].getRiddle()
+        next_room = hunts[hunt_id]['objects'][player['current_object']].getRoom()
         return render_template("player-dashboard.html", riddle=next_hint, room=next_room, obj=player['current_object'], player_id=player_id, hunt_id=hunt_id)
     else:
         return render_template("error.html", error="Player not found or invalid hunt ID.")
@@ -116,7 +121,7 @@ def submit_item():
         return render_template("error.html", error="Invalid hunt ID.")
 
     current_object_idx = player['current_object']
-    correct_code = str(hunts[hunt_id]['objects'][current_object_idx]['code'])
+    correct_code = str(hunts[hunt_id]['objects'][current_object_idx].getCode())
 
     if player['finished']:
         return render_template("error.html", error="You have already finished the hunt!")
