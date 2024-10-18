@@ -25,21 +25,17 @@ def home():
 # Route for organizers to start a hunt
 @app.route("/start-hunt", methods=['POST'])
 def start_hunt():
+    print("request", request.form)
+
     hunt_name = request.form['roomName']
     organizer = request.form['org']
-    riddle1 = request.form['riddle1']
-    riddle2 = request.form['riddle2']
-    riddle3 = request.form['riddle3']
-    room1 = request.form['room1']
-    room2 = request.form['room2']
-    room3 = request.form['room3']
-    code1 = request.form['code1']
-    code2 = request.form['code2']
-    code3 = request.form['code3']
+    
+    objectNumber = 1
+    objects = []
 
-    object1 = Object(request.form['riddle1'], request.form['room1'], request.form['code1'])
-    object2 = Object(request.form['riddle2'], request.form['room2'], request.form['code2'])
-    object3 = Object(request.form['riddle3'], request.form['room3'], request.form['code3'])
+    while f"riddle{objectNumber}" in request.form:
+        objects.append(Object(request.form[f'riddle{objectNumber}'], request.form[f'room{objectNumber}'], request.form[f'code{objectNumber}']))
+        objectNumber += 1
 
     hunt_id = random.randint(1000, 9999)
 
@@ -47,16 +43,13 @@ def start_hunt():
         response = model.generate_content(f"You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. The object description given is {object.getRiddle()}")
         return response.text        
 
-    object1.setRiddle(generate_riddle(object1))
-    object2.setRiddle(generate_riddle(object2))
-    object3.setRiddle(generate_riddle(object3))
+    for object in objects:
+        object.setRiddle(generate_riddle(object))
 
     hunts[hunt_id] = {
         'hunt_name': hunt_name,
         'organizer': organizer,
-        'objects': [
-            object1, object2, object3
-        ],
+        'objects': objects,
         'players': []
     }
     return render_template("hunt-reveal.html", hunt_name=hunt_name, hunt_id=hunt_id)
