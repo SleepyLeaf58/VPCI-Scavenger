@@ -11,5 +11,13 @@ class ObjectGenerated(Object):
         load_dotenv()
         genai.configure(api_key=os.environ['API_KEY'])
         self.model = genai.GenerativeModel("gemini-1.5-flash")
-        response = self.model.generate_content(f"You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. The object description given is {riddle}")
+
+        prompt = f"""You are an AI assistant helping a game organizer create riddles to hide 
+        objects within a room. Given a description of the object and its location, generate a 
+        concise and specific riddle (around 20-25 words). Emphasize the object's distinctive 
+        features and its exact location, ensuring the riddle clearly directs players to the item. 
+        Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. 
+        The object description given is {riddle}"""
+
+        response = self.model.generate_content(prompt)
         super().setRiddle(response.text)
