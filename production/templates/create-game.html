@@ -74,7 +74,7 @@
     <div class="game-background"></div>
 
     <!-- Form -->
-    <div class="form-container">
+    <div id="object-form" class="form-container">
       <h1>Create a Game</h1>
       <form action="/start-hunt" method="POST">
         <div class="mb-3">
@@ -90,22 +90,38 @@
 
         <!-- Riddles, Rooms, and Codes Group -->
         <div class="mb-3">
-          <h5>Objects</h5>
+          <h1 class="display-6">Objects</h1>
           <div id="ObjectInput">
             <div class="row">
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="form-label">Description #1</label>
-                  <textarea name="riddle1" class="form-control" id="numItems"></textarea>
+              <h5>Object 1</h5>
+              <div class="col-md-2 d-flex flex-column flex-start">
+                <p class="mb-1">Riddle Type</p>
+                <div id="type-form-1" class="form-check">
+                  <input class="form-check-input" type="radio" name="riddle-type-1" id="riddle-ai-1" value="AI">
+                  <label class="form-check-label" for="riddle-type-1">
+                    Provided
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="riddle-type-1" id="riddle-provided-1" value="Provided" checked>
+                  <label class="form-check-label" for="riddle-type-1">
+                    Generated
+                  </label>
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="mb-3">
+                  <label id="description-1" class="form-label">Description #1</label>
+                  <textarea name="riddle1" class="form-control" id="numItems"></textarea>
+                </div>
+              </div>
+              <div class="col-md-3">
                 <div class="mb-3">
                   <label class="form-label">Room #1</label>
                   <input type="text" name="room1" class="form-control" id="numItems">
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <div class="mb-3">
                   <label class="form-label">Code #1</label>
                   <input type="text" name="code1" class="form-control" id="numItems">
@@ -113,19 +129,35 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="form-label">Description #2</label>
-                  <textarea name="riddle2" class="form-control" id="numItems"></textarea>
+              <h5>Object 2</h5>
+              <div class="col-md-2 d-flex flex-column flex-start">
+                <p class="mb-1">Riddle Type</p>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="riddle-type-2" id="riddle-ai-2" value="AI">
+                  <label class="form-check-label" for="riddle-type-2">
+                    Provided
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="riddle-type-2" id="riddle-provided-2" value="Provided" checked>
+                  <label class="form-check-label" for="riddle-type-2">
+                    Generated
+                  </label>
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="mb-3">
+                  <label id="description-2" class="form-label">Description #2</label>
+                  <textarea name="riddle2" class="form-control" id="numItems"></textarea>
+                </div>
+              </div>
+              <div class="col-md-3">
                 <div class="mb-3">
                   <label class="form-label">Room #2</label>
                   <input type="text" name="room2" class="form-control" id="numItems">
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <div class="mb-3">
                   <label class="form-label">Code #2</label>
                   <input type="text" name="code2" class="form-control" id="numItems">
@@ -133,25 +165,45 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="form-label">Description #3</label>
-                  <textarea name="riddle3" class="form-control" id="numItems"></textarea>
+              <h5>Object 3</h5>
+              <div class="col-md-2 d-flex flex-column flex-start">
+                <p class="mb-1">Riddle Type</p>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="riddle-type-3" id="riddle-ai-3" value="AI">
+                  <label class="form-check-label" for="riddle-type-3">
+                    Provided
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="riddle-type-3" id="riddle-provided-3" value="Provided" checked>
+                  <label class="form-check-label" for="riddle-type-3">
+                    Generated
+                  </label>
                 </div>
               </div>
               <div class="col-md-4">
+                <div class="mb-3">
+                  <label id="description-3" class="form-label">Description #3</label>
+                  <textarea name="riddle3" class="form-control" id="numItems"></textarea>
+                </div>
+              </div>
+              <div class="col-md-3">
                 <div class="mb-3">
                   <label class="form-label">Room #3</label>
                   <input type="text" name="room3" class="form-control" id="numItems">
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <div class="mb-3">
                   <label class="form-label">Code #3</label>
                   <input type="text" name="code3" class="form-control" id="numItems">
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="row">
+            <p id="error" class="text-danger"></p>
           </div>
 
           <div class="row">
@@ -167,18 +219,54 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100">Create Game</button>
+          <button id="submit-object" type="submit" class="btn btn-primary w-100">Create Game</button>
       </form>
     </div>
   </div>
 
   <!-- Script for adding and removing objects-->
   <script>
-    console.log("Script");
+    // Adding and removing objects
     let count = 3;
 
     document.getElementById('AddButton').addEventListener('click', addObject);
     document.getElementById('RemoveButton').addEventListener('click', removeObject);
+    document.getElementById('submit-object').addEventListener('click', validateForm);
+
+    for (let i = 1; i <= count; i++) {
+      document.getElementById(`riddle-ai-${i}`).addEventListener('click', () => {updateRiddleType(i)});
+      document.getElementById(`riddle-provided-${i}`).addEventListener('click', () => {updateRiddleType(i)});
+    }
+
+    function updateRiddleType(cnt) {
+      var label = document.getElementById(`description-${cnt}`)
+      var radio_ai = document.getElementById(`riddle-ai-${cnt}`)
+      var radio_provided = document.getElementById(`riddle-provided-${cnt}`)
+
+      if (radio_provided.checked) {
+        label.innerHTML = `Description #${cnt}`;
+      }
+      else if (radio_ai.checked) {
+        label.innerHTML = `Riddle #${cnt}`
+      }
+    }
+
+    function validateForm() {
+      var errorElement = document.getElementById('error');
+      var errorMessage = "";
+
+      if (count === 0) {
+        errorMessage += "At least one object is required.<br>";
+      }
+      else {
+        errorMessage = "";
+      }
+
+      if (errorMessage != "") {
+        event.preventDefault();
+        errorElement.innerHTML = errorMessage;
+      }
+    }
 
     function addObject() {
       console.log("Add");
@@ -187,25 +275,41 @@
       div.setAttribute("class", "row");
       div.innerHTML = `
       <div class="row">
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">Description #${count}</label>
-              <textarea name="riddle${count}" class="form-control" id="numItems"></textarea>
-            </div>
+        <h5>Object ${count}</h5>
+        <div class="col-md-2 d-flex flex-column flex-start">
+          <p class="mb-1">Riddle Type</p>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="riddle-type-${count}" id="riddle-ai-${count}" value="AI">
+            <label class="form-check-label" for="riddle-type-${count}">
+              Provided
+            </label>
           </div>
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">Room #${count}</label>
-              <input type="text" name="room${count}" class="form-control" id="numItems">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="mb-3">
-              <label class="form-label">Code #${count}</label>
-              <input type="text" name="code${count}" class="form-control" id="numItems">
-            </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="riddle-type-${count}" id="riddle-provided-${count}" value="Provided" checked>
+            <label class="form-check-label" for="riddle-type-${count}">
+              Generated
+            </label>
           </div>
         </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label id="description-${count}" class="form-label">Description #${count}</label>
+            <textarea name="riddle${count}" class="form-control" id="numItems"></textarea>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="mb-3">
+            <label class="form-label">Room #${count}</label>
+            <input type="text" name="room${count}" class="form-control" id="numItems">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="mb-3">
+            <label class="form-label">Code #${count}</label>
+            <input type="text" name="code${count}" class="form-control" id="numItems">
+          </div>
+        </div>
+      </div>
       `;
       document.getElementById("ObjectInput").appendChild(div);
     }
@@ -213,7 +317,9 @@
     function removeObject() {
       if (count > 0) count--;
       var objectInput = document.getElementById("ObjectInput");
-      objectInput.removeChild(objectInput.lastChild);
+      console.log("Remove", count);
+      console.log(objectInput.lastElementChild);
+      objectInput.removeChild(objectInput.lastElementChild);
     }
 
   </script>

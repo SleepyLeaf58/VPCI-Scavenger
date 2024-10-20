@@ -1,18 +1,11 @@
 from flask import *
 import random
-import google.generativeai as genai
-import os
-from dotenv import load_dotenv
 import time
 
-from Object import *
+from ObjectGenerated import ObjectGenerated
+from ObjectProvided import ObjectProvided
 
 app = Flask(__name__)
-
-load_dotenv()
-
-genai.configure(api_key=os.environ['API_KEY'])
-model = genai.GenerativeModel("gemini-1.5-flash")
 
 hunts = {}  # store hunts and items
 players = {}  # store players and their progress
@@ -25,8 +18,6 @@ def home():
 # Route for organizers to start a hunt
 @app.route("/start-hunt", methods=['POST'])
 def start_hunt():
-    print("request", request.form)
-
     hunt_name = request.form['roomName']
     organizer = request.form['org']
     
@@ -34,17 +25,18 @@ def start_hunt():
     objects = []
 
     while f"riddle{objectNumber}" in request.form:
-        objects.append(Object(request.form[f'riddle{objectNumber}'], request.form[f'room{objectNumber}'], request.form[f'code{objectNumber}']))
+        obj = None
+        if (request.form[f'riddle-type-{objectNumber}'] == 'AI'):
+            obj = ObjectGenerated("", request.form[f'room{objectNumber}'], request.form[f'code{objectNumber}'])
+        else: 
+            obj = ObjectProvided("", request.form[f'room{objectNumber}'], request.form[f'code{objectNumber}'])
+        objects.append(obj)
         objectNumber += 1
 
-    hunt_id = random.randint(1000, 9999)
+    hunt_id = random.randint(1000, 9999)    
 
-    def generate_riddle(object):
-        response = model.generate_content(f"You are an AI assistant helping a game organizer create riddles to hide objects within a room. Given a description of the object and its location, generate a concise and specific riddle (around 20-25 words). Emphasize the object's distinctive features and its exact location, ensuring the riddle clearly directs players to the item. Make sure the clues are specific and unambiguous. Absolutely do not say the object in question. The object description given is {object.getRiddle()}")
-        return response.text        
-
-    for object in objects:
-        object.setRiddle(generate_riddle(object))
+    for cnt, object in enumerate(objects):
+        object.setRiddle(request.form[f'riddle{cnt+1}'])
 
     hunts[hunt_id] = {
         'hunt_name': hunt_name,

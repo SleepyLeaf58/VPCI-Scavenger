@@ -1,4 +1,5 @@
 # Object class to track objects
+from abc import ABC, abstractmethod
 
 class Object:
     __riddle = None
@@ -14,6 +15,7 @@ class Object:
     def getRiddle(self):
         return self.__riddle
     
+    @abstractmethod
     def setRiddle(self, riddle):
         self.__riddle = riddle
 
@@ -28,3 +30,6 @@ class Object:
     
     def setCode(self, code):
         self.__code = code
+
+    def __str__(self):
+        return f"('{self.__riddle}', '{self.__room}', '{self.__code})"
