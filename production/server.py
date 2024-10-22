@@ -4,6 +4,7 @@ import time
 
 from ObjectGenerated import ObjectGenerated
 from ObjectProvided import ObjectProvided
+from Player import Player
 
 app = Flask(__name__)
 
@@ -36,7 +37,7 @@ def start_hunt():
     hunt_id = random.randint(1000, 9999)    
 
     for cnt, object in enumerate(objects):
-        object.setRiddle(request.form[f'riddle{cnt+1}'])
+        object.set_riddle(request.form[f'riddle{cnt+1}'])
 
     hunts[hunt_id] = {
         'hunt_name': hunt_name,
@@ -53,7 +54,7 @@ def join_hunt():
     name = request.form["name"]
     if hunt_id in hunts:
         player_id = random.randint(1000, 9999)
-        player = {'name': name, 'current_object': 0, 'start_time': time.time(), 'current_time': time.time(), 'finished': False}
+        player = Player(name, 0, time.time(), time.time(), False)
         hunts[hunt_id]['players'].append(player_id)
         players[player_id] = player
         return render_template("save-local.html", player_id=player_id, hunt_id=hunt_id)
@@ -66,9 +67,9 @@ def current_riddle():
     hunt_id = int(request.form["hunt_id"])
     player = players.get(int(player_id))
     if player:
-        next_hint = hunts[hunt_id]['objects'][player['current_object']].getRiddle()
-        next_room = hunts[hunt_id]['objects'][player['current_object']].getRoom()
-        return render_template("player-dashboard.html", riddle=next_hint, room=next_room, obj=player['current_object'], player_id=player_id, hunt_id=hunt_id)
+        next_hint = hunts[hunt_id]['objects'][player.get_current_object()].get_riddle()
+        next_room = hunts[hunt_id]['objects'][player.get_current_object()].get_room()
+        return render_template("player-dashboard.html", riddle=next_hint, room=next_room, obj=player.get_current_object(), player_id=player_id, hunt_id=hunt_id)
     else:
         return render_template("error.html", error="Player not found.")
 
@@ -86,9 +87,9 @@ def current_riddle_get(player, hunt):
     hunt_id = int(hunt)
     player = players.get(player_id)
     if player:
-        next_hint = hunts[hunt_id]['objects'][player['current_object']].getRiddle()
-        next_room = hunts[hunt_id]['objects'][player['current_object']].getRoom()
-        return render_template("player-dashboard.html", riddle=next_hint, room=next_room, obj=player['current_object'], player_id=player_id, hunt_id=hunt_id)
+        next_hint = hunts[hunt_id]['objects'][player.get_current_object()].get_riddle()
+        next_room = hunts[hunt_id]['objects'][player.get_current_object()].get_room()
+        return render_template("player-dashboard.html", riddle=next_hint, room=next_room, obj=player.get_current_object(), player_id=player_id, hunt_id=hunt_id)
     else:
         return render_template("error.html", error="Player not found or invalid hunt ID.")
 
@@ -106,19 +107,19 @@ def submit_item():
     if hunt_id not in hunts:
         return render_template("error.html", error="Invalid hunt ID.")
 
-    current_object_idx = player['current_object']
-    correct_code = str(hunts[hunt_id]['objects'][current_object_idx].getCode())
+    current_object_idx = player.get_current_object()
+    correct_code = str(hunts[hunt_id]['objects'][current_object_idx].get_code())
 
-    if player['finished']:
+    if player.get_finished():
         return render_template("error.html", error="You have already finished the hunt!")
 
     if code == correct_code:
-        player['current_object'] += 1
-        player['current_time'] = time.time()
-        if player['current_object'] < len(hunts[hunt_id]['objects']):
+        player.set_current_object(player.get_current_object() + 1)
+        player.set_current_time(time.time())
+        if player.get_current_object() < len(hunts[hunt_id]['objects']):
             return redirect(f"/current-riddle/{player_id}/{hunt_id}")
         else:
-            player['finished'] = True
+            player.set_finished(True)
             return redirect(f"/finish/{player_id}/{hunt_id}")
     else:
         return render_template("error.html", error="Incorrect code.")
@@ -131,8 +132,8 @@ def leaderboard(hunt_id):
         for player_id in hunts[hunt_id]['players']:
             pl = players.get(player_id)
             if pl:
-                name = pl["name"]
-                score = pl["current_object"]
+                name = pl.get_name()
+                score = pl.get_current_object()
                 names.append(name)
                 scores.append(score)
 
@@ -152,21 +153,21 @@ def finish_game(player, hunt):
     hunt_id = int(hunt)
     player = players.get(player_id)
 
-    if player and player['finished']:
-        player_time = player['current_time']
+    if player and player.get_finished():
+        player_time = player.get_current_time()
         rank = 1
         for participant in hunts[hunt_id]['players']:
             pl = players.get(participant)
-            if pl and pl['finished'] and pl['current_time'] < player_time:
+            if pl and pl.get_finished() and pl.get_current_time() < player_time:
                 rank += 1
 
-        total_seconds = round(player['current_time'] - player['start_time'])
+        total_seconds = round(player.get_current_time() - player.get_start_time())
         hours = total_seconds // 3600
         total_seconds %= 3600
         minutes = total_seconds // 60
         total_seconds %= 60
         seconds = total_seconds
-        return render_template("finish.html", name=player['name'], rk=rank, hrs=hours, mins=minutes, secs=seconds)
+        return render_template("finish.html", name=player.get_name(), rk=rank, hrs=hours, mins=minutes, secs=seconds)
     else:
         return render_template("error.html", error="Unfinished hunt or player not found.")
 

@@ -12,23 +12,23 @@ class Object:
         self.__code = code
 
     # Getters and Setters
-    def getRiddle(self):
+    def get_riddle(self):
         return self.__riddle
     
     @abstractmethod
-    def setRiddle(self, riddle):
+    def _set_riddle(self, riddle):
         self.__riddle = riddle
 
-    def getRoom(self):
+    def get_room(self):
         return self.__room
     
-    def setRoom(self, room):
+    def set_room(self, room):
         self.__room = room
 
-    def getCode(self):
+    def get_code(self):
         return self.__code
     
-    def setCode(self, code):
+    def set_code(self, code):
         self.__code = code
 
     def __str__(self):

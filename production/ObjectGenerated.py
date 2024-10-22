@@ -7,7 +7,7 @@ class ObjectGenerated(Object):
     def __init__(self, riddle, room, code):
         super().__init__(riddle, room, code)
     
-    def setRiddle(self, riddle):
+    def set_riddle(self, riddle):
         load_dotenv()
         genai.configure(api_key=os.environ['API_KEY'])
         self.model = genai.GenerativeModel("gemini-1.5-flash")
@@ -20,4 +20,4 @@ class ObjectGenerated(Object):
         The object description given is {riddle}"""
 
         response = self.model.generate_content(prompt)
-        super().setRiddle(response.text)
+        super()._set_riddle(response.text)
